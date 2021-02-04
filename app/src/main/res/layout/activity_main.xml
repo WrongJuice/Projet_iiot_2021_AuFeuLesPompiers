@@ -10,24 +10,136 @@
     <RelativeLayout
         android:layout_height="50dp"
         android:layout_width="match_parent"
+        android:background="@drawable/border_solid_bottom"
+        android:layout_marginBottom="20dp"
         android:id="@+id/user_view">
 
         <ImageView
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
-            android:contentDescription="@string/user_icon" />
+            android:src="@drawable/ic_baseline_account_circle_24"
+            android:contentDescription="@string/user_icon"
+            android:id="@+id/user_icon"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/username"
             android:layout_alignParentStart="true"
-            android:gravity="center"
+            android:layout_toStartOf="@+id/user_icon"
+            android:gravity="center_vertical"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
             android:text="@string/not_authenticated"/>
 
     </RelativeLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_height="80dp"
+                android:layout_width="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/layout_rounded_corners"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp"
+                android:id="@+id/sensor_view">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_baseline_arrow_forward_24"
+                    android:contentDescription="@string/user_icon"
+                    android:id="@+id/arrow_forward_sensor"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/arrow_forward_sensor"
+                    android:textSize="22sp"
+                    android:gravity="center"
+                    android:text="@string/manage_sensor"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_height="420dp"
+                android:layout_width="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/layout_rounded_corners"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp"
+                android:id="@+id/alert_view">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="70dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_above="@+id/alert_list"
+                    android:src="@drawable/ic_baseline_arrow_forward_24"
+                    android:contentDescription="@string/user_icon"
+                    android:id="@+id/arrow_forward_alert"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="70dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_above="@+id/alert_list"
+                    android:layout_toStartOf="@+id/arrow_forward_alert"
+                    android:textSize="22sp"
+                    android:gravity="center"
+                    android:text="@string/alerts_to_be_processed"/>
+
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="350dp"
+                    android:maxHeight="350dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/alert_list"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_height="80dp"
+                android:layout_width="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/layout_rounded_corners"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp"
+                android:id="@+id/info_view">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_baseline_arrow_forward_24"
+                    android:contentDescription="@string/user_icon"
+                    android:id="@+id/arrow_forward_info"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/arrow_forward_info"
+                    android:textSize="22sp"
+                    android:gravity="center"
+                    android:text="@string/additional_information"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

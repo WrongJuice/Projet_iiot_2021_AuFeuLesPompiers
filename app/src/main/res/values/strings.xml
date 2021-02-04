@@ -2,4 +2,7 @@
     <string name="app_name">Au Feu Les Pompiers</string>
     <string name="not_authenticated">Non authentifié</string>
     <string name="user_icon">icone de compte utilisateur</string>
+    <string name="manage_sensor">Gérer un capteur</string>
+    <string name="alerts_to_be_processed">Alertes à traiter</string>
+    <string name="additional_information">Informations supplémentaires</string>
 </resources>
