@@ -5,4 +5,5 @@
     <string name="manage_sensor">Gérer un capteur</string>
     <string name="alerts_to_be_processed">Alertes à traiter</string>
     <string name="additional_information">Informations supplémentaires</string>
+    <string name="no_alerts_to_process">Aucune alerte à traiter</string>
 </resources>

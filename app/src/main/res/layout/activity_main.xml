@@ -8,10 +8,9 @@
     tools:context=".MainActivity">
 
     <RelativeLayout
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         android:layout_width="match_parent"
         android:background="@drawable/border_solid_bottom"
-        android:layout_marginBottom="20dp"
         android:id="@+id/user_view">
 
         <ImageView
@@ -29,6 +28,7 @@
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/user_icon"
             android:gravity="center_vertical"
+            android:textSize="18sp"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
             android:text="@string/not_authenticated"/>
@@ -37,7 +37,8 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,8 +74,9 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_height="420dp"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:maxHeight="350dp"
                 android:layout_margin="10dp"
                 android:background="@drawable/layout_rounded_corners"
                 android:paddingEnd="20dp"
@@ -85,7 +87,6 @@
                     android:layout_width="50dp"
                     android:layout_height="70dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_above="@+id/alert_list"
                     android:src="@drawable/ic_baseline_arrow_forward_24"
                     android:contentDescription="@string/user_icon"
                     android:id="@+id/arrow_forward_alert"/>
@@ -94,18 +95,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="70dp"
                     android:layout_alignParentStart="true"
-                    android:layout_above="@+id/alert_list"
                     android:layout_toStartOf="@+id/arrow_forward_alert"
                     android:textSize="22sp"
                     android:gravity="center"
-                    android:text="@string/alerts_to_be_processed"/>
+                    android:text="@string/alerts_to_be_processed"
+                    android:id="@+id/alert_to_process"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_margin="40dp"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    android:visibility="visible"
+                    android:text="@string/no_alerts_to_process"
+                    android:layout_below="@+id/alert_to_process"/>
 
                 <ListView
                     android:layout_width="match_parent"
-                    android:layout_height="350dp"
-                    android:maxHeight="350dp"
-                    android:layout_alignParentBottom="true"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/arrow_forward_alert"
                     android:layout_marginBottom="10dp"
+                    android:visibility="gone"
                     android:id="@+id/alert_list"/>
 
             </RelativeLayout>
