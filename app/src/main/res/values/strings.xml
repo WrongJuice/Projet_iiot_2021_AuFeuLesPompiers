@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Au Feu Les Pompiers</string>
+    <string name="not_authenticated">Non authentifié</string>
+    <string name="user_icon">icone de compte utilisateur</string>
 </resources>
