@@ -18,11 +18,8 @@ import java.util.List;
 
 public class AlertAdapter  extends ArrayAdapter<Alert> {
 
-    Context context;
-
     public AlertAdapter(@NonNull Context context, int resource, @NonNull List<Alert> objects) {
         super(context, resource, objects);
-        this.context = context;
     }
 
     @NonNull
@@ -36,8 +33,8 @@ public class AlertAdapter  extends ArrayAdapter<Alert> {
         }
 
         convertView.setOnClickListener(view -> {
-            Intent intent = new Intent(context, AlertActivity.class);
-            context.startActivity(intent);
+            Intent intent = new Intent(view.getContext(), AlertActivity.class);
+            view.getContext().startActivity(intent);
         });
 
         return super.getView(position, convertView, parent);

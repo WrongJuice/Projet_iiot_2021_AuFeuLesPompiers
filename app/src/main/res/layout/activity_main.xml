@@ -110,7 +110,8 @@
                     android:gravity="center"
                     android:visibility="gone"
                     android:text="@string/no_alerts_to_process"
-                    android:layout_below="@+id/alert_to_process"/>
+                    android:layout_below="@+id/alert_to_process"
+                    android:id="@+id/no_alert"/>
 
                 <ListView
                     android:layout_width="match_parent"

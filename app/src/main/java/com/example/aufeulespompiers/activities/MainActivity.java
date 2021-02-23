@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.aufeulespompiers.R;
 import com.example.aufeulespompiers.adapters.AlertAdapter;
@@ -30,18 +32,28 @@ public class MainActivity extends AppCompatActivity {
         infoView = findViewById(R.id.info_view);
         alertsList = findViewById(R.id.alert_list);
 
-        ViewGroup.LayoutParams params = alertView.getLayoutParams();
-        alertView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                alertView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                //height is ready
-                if (alertView.getHeight() > pxToDp(400)) {
-                    params.height = pxToDp(400);
-                    alertView.setLayoutParams(params);
+        ArrayList<Alert> alerts = new ArrayList<>();
+        AlertAdapter alertAdapter = new AlertAdapter(this, 0, alerts);
+        alertsList.setAdapter(alertAdapter);
+
+        if (alerts.isEmpty()) {
+            System.out.println("LOL");
+            alertsList.setVisibility(View.GONE);
+            findViewById(R.id.no_alert).setVisibility(View.VISIBLE);
+        } else {
+            ViewGroup.LayoutParams params = alertView.getLayoutParams();
+            alertView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    alertView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    //height is ready
+                    if (alertView.getHeight() > pxToDp(400)) {
+                        params.height = pxToDp(400);
+                        alertView.setLayoutParams(params);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         alertView.setOnClickListener(view -> {
             Intent intent = new Intent(this, AlertsListActivity.class);
@@ -52,10 +64,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, InfoActivity.class);
             startActivity(intent);
         });
-
-        ArrayList<Alert> alerts = new ArrayList<>();
-        AlertAdapter alertAdapter = new AlertAdapter(this, 0, alerts);
-        alertsList.setAdapter(alertAdapter);
 
     }
 
