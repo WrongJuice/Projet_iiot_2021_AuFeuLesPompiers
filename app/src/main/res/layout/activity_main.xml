@@ -35,9 +35,9 @@
 
     </RelativeLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
 
         <LinearLayout
@@ -75,7 +75,7 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_height="600dp"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:layout_margin="10dp"
                 android:background="@drawable/layout_rounded_corners"
@@ -114,10 +114,9 @@
 
                 <ListView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="0dp"
                     android:layout_below="@+id/arrow_forward_alert"
                     android:layout_marginBottom="10dp"
-                    android:visibility="visible"
                     android:id="@+id/alert_list"/>
 
             </RelativeLayout>
@@ -152,6 +151,6 @@
 
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
 </LinearLayout>

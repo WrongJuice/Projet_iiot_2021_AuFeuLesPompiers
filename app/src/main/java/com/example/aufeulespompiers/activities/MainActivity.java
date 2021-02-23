@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.aufeulespompiers.R;
 import com.example.aufeulespompiers.Service.DataManager;
@@ -39,21 +38,18 @@ public class MainActivity extends AppCompatActivity {
         alertsList.setAdapter(alertAdapter);
 
         if (alerts.isEmpty()) {
-            System.out.println("LOL");
             alertsList.setVisibility(View.GONE);
             findViewById(R.id.no_alert).setVisibility(View.VISIBLE);
         } else {
 
-            ViewGroup.LayoutParams params = alertView.getLayoutParams();
-            alertView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            ViewGroup.LayoutParams params = alertsList.getLayoutParams();
+            alertsList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    alertView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    alertsList.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     //height is ready
-                    if (alertView.getHeight() > pxToDp(400)) {
-                        params.height = pxToDp(400);
-                        alertView.setLayoutParams(params);
-                    }
+                    params.height = Math.min(pxToDp(60)*alerts.size(), pxToDp(200));
+                    alertsList.setLayoutParams(params);
                 }
             });
         }
