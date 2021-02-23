@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.aufeulespompiers.R;
+import com.example.aufeulespompiers.Service.DataManager;
 import com.example.aufeulespompiers.adapters.AlertAdapter;
 import com.example.aufeulespompiers.model.Alert;
 
@@ -32,8 +33,9 @@ public class MainActivity extends AppCompatActivity {
         infoView = findViewById(R.id.info_view);
         alertsList = findViewById(R.id.alert_list);
 
-        ArrayList<Alert> alerts = new ArrayList<>();
-        AlertAdapter alertAdapter = new AlertAdapter(this, 0, alerts);
+        DataManager.generateFakesAlerts();
+        ArrayList<Alert> alerts = DataManager.getAlerts();
+        AlertAdapter alertAdapter = new AlertAdapter(this, alerts);
         alertsList.setAdapter(alertAdapter);
 
         if (alerts.isEmpty()) {
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
             alertsList.setVisibility(View.GONE);
             findViewById(R.id.no_alert).setVisibility(View.VISIBLE);
         } else {
+
             ViewGroup.LayoutParams params = alertView.getLayoutParams();
             alertView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override

@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.aufeulespompiers.R;
+import com.example.aufeulespompiers.Service.DataManager;
 import com.example.aufeulespompiers.adapters.AlertAdapter;
 import com.example.aufeulespompiers.model.Alert;
 
@@ -21,8 +22,8 @@ public class AlertsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert_list);
         alertsList = findViewById(R.id.alert_list);
-        ArrayList<Alert> alerts = new ArrayList<>();
-        AlertAdapter alertAdapter = new AlertAdapter(this, 0, alerts);
+        ArrayList<Alert> alerts = DataManager.getAlerts();
+        AlertAdapter alertAdapter = new AlertAdapter(this, alerts);
         alertsList.setAdapter(alertAdapter);
     }
 

@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/alert_item">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,7 +43,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="40"
-            android:paddingEnd="10dp"
+            android:paddingEnd="5dp"
             android:paddingStart="20dp"
             android:paddingTop="8dp"
             android:text="@string/temperature"/>
@@ -50,7 +51,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
+            android:layout_weight="30"
             android:paddingEnd="20dp"
             android:paddingStart="0dp"
             android:paddingTop="8dp"
