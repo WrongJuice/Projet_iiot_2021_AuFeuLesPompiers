@@ -6,4 +6,9 @@
     <string name="alerts_to_be_processed">Alertes à traiter</string>
     <string name="additional_information">Informations supplémentaires</string>
     <string name="no_alerts_to_process">Aucune alerte à traiter</string>
+    <string name="titled">titled</string>
+    <string name="date">date</string>
+    <string name="temperature">Temperature :</string>
+    <string name="random_hot_temp">43.5°C</string>
+    <string name="distance">distance</string>
 </resources>
