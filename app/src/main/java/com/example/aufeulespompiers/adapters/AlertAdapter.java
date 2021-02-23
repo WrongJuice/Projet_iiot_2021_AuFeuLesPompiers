@@ -1,6 +1,7 @@
 package com.example.aufeulespompiers.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.aufeulespompiers.R;
+import com.example.aufeulespompiers.activities.AlertActivity;
 import com.example.aufeulespompiers.model.Alert;
 
 import java.util.List;
 
 public class AlertAdapter  extends ArrayAdapter<Alert> {
 
+    Context context;
+
     public AlertAdapter(@NonNull Context context, int resource, @NonNull List<Alert> objects) {
         super(context, resource, objects);
+        this.context = context;
     }
 
     @NonNull
@@ -29,6 +34,11 @@ public class AlertAdapter  extends ArrayAdapter<Alert> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.alert_item, parent, false);
         }
+
+        convertView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, AlertActivity.class);
+            context.startActivity(intent);
+        });
 
         return super.getView(position, convertView, parent);
     }

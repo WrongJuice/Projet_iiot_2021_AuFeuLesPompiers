@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         alertView = findViewById(R.id.alert_view);
         infoView = findViewById(R.id.info_view);
+        alertsList = findViewById(R.id.alert_list);
 
         ViewGroup.LayoutParams params = alertView.getLayoutParams();
         alertView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
