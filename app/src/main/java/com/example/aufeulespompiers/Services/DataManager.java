@@ -1,4 +1,4 @@
-package com.example.aufeulespompiers.Service;
+package com.example.aufeulespompiers.Services;
 
 import com.example.aufeulespompiers.model.Alert;
 import com.example.aufeulespompiers.model.SensorStatement;

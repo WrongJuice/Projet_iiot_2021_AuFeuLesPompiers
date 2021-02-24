@@ -12,9 +12,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.example.aufeulespompiers.R;
-import com.example.aufeulespompiers.Service.DataManager;
+import com.example.aufeulespompiers.Services.DataManager;
 import com.example.aufeulespompiers.adapters.AlertAdapter;
 import com.example.aufeulespompiers.model.Alert;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
@@ -29,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Subscribe to list of notified
+        FirebaseMessaging.getInstance().subscribeToTopic("pompier");
         alertView = findViewById(R.id.alert_view);
         infoView = findViewById(R.id.info_view);
         alertsList = findViewById(R.id.alert_list);

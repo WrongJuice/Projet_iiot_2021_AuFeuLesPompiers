@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "374279897028",
+    "project_id": "au-feu-les-pompiers",
+    "storage_bucket": "au-feu-les-pompiers.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374279897028:android:77523fcc64873742922e91",
+        "android_client_info": {
+          "package_name": "com.example.aufeulespompiers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374279897028-k8o8g31qggkdrgqqau0f0ookdnvekc5l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYlYX3hw2RWOzMTTaTWYOLoU7USGMX338"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374279897028-k8o8g31qggkdrgqqau0f0ookdnvekc5l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

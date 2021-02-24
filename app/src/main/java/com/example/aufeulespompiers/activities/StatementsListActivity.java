@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.aufeulespompiers.R;
-import com.example.aufeulespompiers.Service.DataManager;
+import com.example.aufeulespompiers.Services.DataManager;
 import com.example.aufeulespompiers.adapters.StatementAdapter;
 import com.example.aufeulespompiers.model.SensorStatement;
 
