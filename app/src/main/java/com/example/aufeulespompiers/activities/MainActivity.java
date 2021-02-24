@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         alertView = findViewById(R.id.alert_view);
         infoView = findViewById(R.id.info_view);
         alertsList = findViewById(R.id.alert_list);
+        sensorView = findViewById(R.id.sensor_view);
 
         DataManager.generateFakesData();
         ArrayList<Alert> alerts = DataManager.getAlerts();
@@ -55,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         sensorView.setOnClickListener(view -> {
-            Intent intent = new Intent(this, StatementsListActivity.class);
-            startActivity(intent);
+            /*Intent intent = new Intent(this, StatementsListActivity.class);
+            startActivity(intent);*/
         });
 
         alertView.setOnClickListener(view -> {
