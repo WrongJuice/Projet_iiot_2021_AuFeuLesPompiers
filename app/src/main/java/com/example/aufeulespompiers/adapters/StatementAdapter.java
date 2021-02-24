@@ -11,41 +11,44 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.aufeulespompiers.R;
-import com.example.aufeulespompiers.activities.AlertActivity;
-import com.example.aufeulespompiers.model.Alert;
+import com.example.aufeulespompiers.model.SensorStatement;
 
 import java.util.List;
 
-public class AlertAdapter extends ArrayAdapter<Alert> {
+public class StatementAdapter extends ArrayAdapter<SensorStatement> {
 
     Context context;
 
-    public AlertAdapter(@NonNull Context context, @NonNull List<Alert> objects) {
-        super(context, R.layout.alert_item, objects);
-        this.context = context;
+    public StatementAdapter(@NonNull Context context, @NonNull List<SensorStatement> objects) {
+            super(context, R.layout.sensor_statement_item, objects);
+            this.context = context;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        Alert alert = getItem(position);
+        SensorStatement statement = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.alert_item, parent, false);
+            convertView = LayoutInflater.from(getContext())
+                    .inflate(R.layout.sensor_statement_item, parent, false);
         }
 
+        /*
         convertView.setOnClickListener(view -> {
-            Intent intent = new Intent(context, AlertActivity.class);
+            Intent intent = new Intent(context, StatementActivity.class);
             context.startActivity(intent);
         });
+         */
 
         return convertView;
     }
 
     @Nullable
     @Override
-    public Alert getItem(int position) {
+    public SensorStatement getItem(int position) {
         return super.getItem(position);
     }
+
 }

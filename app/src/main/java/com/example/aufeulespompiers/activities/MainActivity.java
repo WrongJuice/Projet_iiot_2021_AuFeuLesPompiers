@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     RelativeLayout alertView;
     RelativeLayout infoView;
+    RelativeLayout sensorView;
     ListView alertsList;
 
     @Override
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         infoView = findViewById(R.id.info_view);
         alertsList = findViewById(R.id.alert_list);
 
-        DataManager.generateFakesAlerts();
+        DataManager.generateFakesData();
         ArrayList<Alert> alerts = DataManager.getAlerts();
         AlertAdapter alertAdapter = new AlertAdapter(this, alerts);
         alertsList.setAdapter(alertAdapter);
@@ -41,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
             alertsList.setVisibility(View.GONE);
             findViewById(R.id.no_alert).setVisibility(View.VISIBLE);
         } else {
-
             ViewGroup.LayoutParams params = alertsList.getLayoutParams();
             alertsList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -53,6 +53,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        sensorView.setOnClickListener(view -> {
+            Intent intent = new Intent(this, StatementsListActivity.class);
+            startActivity(intent);
+        });
 
         alertView.setOnClickListener(view -> {
             Intent intent = new Intent(this, AlertsListActivity.class);

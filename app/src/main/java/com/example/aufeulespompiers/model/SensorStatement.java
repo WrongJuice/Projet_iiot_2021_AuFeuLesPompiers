@@ -4,17 +4,15 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Calendar;
 
-public class Alert {
+public class SensorStatement {
 
     private String title;
     private Calendar creationDate;
-    private LatLng coordinate; // if we put a map in the future
     private double temperature;
 
-    public Alert(String title, Calendar creationDate, LatLng coordinate, double temperature) {
+    public SensorStatement(String title, Calendar creationDate, LatLng coordinate, double temperature) {
         this.title = title;
         this.creationDate = creationDate;
-        this.coordinate = coordinate;
         this.temperature = temperature;
     }
 
@@ -32,14 +30,6 @@ public class Alert {
 
     public void setCreationDate(Calendar creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public LatLng getCoordinate() {
-        return coordinate;
-    }
-
-    public void setCoordinate(LatLng coordinate) {
-        this.coordinate = coordinate;
     }
 
     public double getTemperature() {
