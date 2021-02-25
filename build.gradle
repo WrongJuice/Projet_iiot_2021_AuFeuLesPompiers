@@ -3,9 +3,19 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'https://api.mavbox.com/downloads/v2/releases/maven'
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username = 'mapbox'
+                password = project.properties['MAPBOX_DOWNLOADS_TOKEN'] ?: ""
+            }
+        }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.1.2"
+        classpath 'com.android.tools.build:gradle:4.1.2'
         classpath 'com.google.gms:google-services:4.3.5'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -17,6 +27,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
     }
 }
 
