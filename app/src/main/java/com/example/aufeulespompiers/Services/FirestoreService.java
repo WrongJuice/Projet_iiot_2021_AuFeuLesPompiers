@@ -56,4 +56,8 @@ public class FirestoreService {
             Log.d(TAG, "getStatements: finish");
         }
     }
+    
+    public void modifyStatmentResolve(Statement statement){
+        db.collection("alerts").document(statement.getId()).update("resolve", statement.getResolve());
+    }
 }

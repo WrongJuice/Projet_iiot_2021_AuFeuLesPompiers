@@ -54,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStatementListReceived(ArrayList<Statement> result) {
                 Log.d(TAG, "onStatementListReceived: " + result.toString());
+                for(Statement tempStatement : result){
+                    tempStatement.setResolve(false);
+                    firestoreService.modifyStatmentResolve(tempStatement);
+                }
             }
         });
 
