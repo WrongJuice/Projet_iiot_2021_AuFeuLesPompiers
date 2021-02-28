@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -14,17 +15,22 @@ import android.widget.RelativeLayout;
 import com.example.aufeulespompiers.R;
 import com.example.aufeulespompiers.Services.DataManager;
 import com.example.aufeulespompiers.adapters.AlertAdapter;
+import com.example.aufeulespompiers.interfaces.OnStatementReceivedListener;
 import com.example.aufeulespompiers.model.Alert;
+import com.example.aufeulespompiers.model.Statement;
+import com.example.aufeulespompiers.services.FirestoreService;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     RelativeLayout alertView;
     RelativeLayout infoView;
     RelativeLayout sensorView;
     ListView alertsList;
+    private FirestoreService firestoreService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,14 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Alert> alerts = DataManager.getAlerts();
         AlertAdapter alertAdapter = new AlertAdapter(this, alerts);
         alertsList.setAdapter(alertAdapter);
+
+        firestoreService = new FirestoreService();
+        firestoreService.getStatements(new OnStatementReceivedListener() {
+            @Override
+            public void onStatementListReceived(ArrayList<Statement> result) {
+                Log.d(TAG, "onStatementListReceived: " + result.toString());
+            }
+        });
 
         if (alerts.isEmpty()) {
             alertsList.setVisibility(View.GONE);
@@ -73,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, InfoActivity.class);
             startActivity(intent);
         });
-
     }
 
     public int pxToDp(int px) {
