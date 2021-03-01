@@ -67,16 +67,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.onCreate(savedInstanceState); // prob with security/telemetry ??
         mapView.getMapAsync(this);
 
-        LinearLayout controlButtonBar = view.findViewById(R.id.control_button_bar);
 
-        controlButtonBar.setEnabled(false/*Replace by isAuth condition*/);
-
-        controlButtonBar.setOnClickListener(view1 -> {
-            // TODO
-            controlButtonBar.setEnabled(false/*Replace by isAuth condition*/);
-        });
-
+        Button takeAlert = view.findViewById(R.id.take_alert);
         Button alertPage = view.findViewById(R.id.alert_page);
+        alertPage.setEnabled(true/*Replace by isAuth condition*/);
+        takeAlert.setEnabled(true/*Replace by isAuth condition*/);
+
         alertPage.setOnClickListener(view1 -> {
             Intent intent = new Intent(getActivity(), AlertActivity.class);
             intent.putExtra("statementId", "fWVp5tej0bD7DkKYUeOp"); // generalize
