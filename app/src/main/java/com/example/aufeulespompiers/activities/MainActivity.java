@@ -1,5 +1,11 @@
 package com.example.aufeulespompiers.activities;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.NfcA;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -8,6 +14,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.aufeulespompiers.R;
 import com.example.aufeulespompiers.Services.DataManager;
@@ -28,19 +36,26 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements PermissionsListener {
-    /*
-    RelativeLayout alertView;
-    RelativeLayout infoView;
-    RelativeLayout sensorView;
-    ListView alertsList;*/
+    private static final String TAG = "MainActivity";
 
-    // distance part
     private PermissionsManager permissionsManager;
     private MapFragment mapFragment;
+
+    //============================================================================================
+    // Variable NFC
+    //============================================================================================
+    IntentFilter[] filters;
+    String[][] techs;
+    PendingIntent pendingIntent;
+    NfcAdapter adapter;
+    ArrayList<String> userCertified;
+    TextView username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,49 +64,18 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
         //Subscribe to list of notified
         FirebaseMessaging.getInstance().subscribeToTopic("pompier");
+        Log.d(TAG, "onCreate: COUCOU");
 
-        /*
-        alertView = findViewById(R.id.alert_view);
-        infoView = findViewById(R.id.info_view);
-        alertsList = findViewById(R.id.alert_list);
-        sensorView = findViewById(R.id.sensor_view);
-
-        DataManager.generateFakesData();
-        ArrayList<Alert> alerts = DataManager.getAlerts();
-        AlertAdapter alertAdapter = new AlertAdapter(this, alerts);
-        alertsList.setAdapter(alertAdapter);*/
-
-        /*if (alerts.isEmpty()) {
-            alertsList.setVisibility(View.GONE);
-            findViewById(R.id.no_alert).setVisibility(View.VISIBLE);
-        } else {
-            ViewGroup.LayoutParams params = alertsList.getLayoutParams();
-            alertsList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    alertsList.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    //height is ready
-                    params.height = Math.min(pxToDp(60)*alerts.size(), pxToDp(200));
-                    alertsList.setLayoutParams(params);
-                }
-            });
-        }
-
-        sensorView.setOnClickListener(view -> {
-            // Intent intent = new Intent(this, StatementsListActivity.class);
-            // startActivity(intent);
-        });
-
-        alertView.setOnClickListener(view -> {
-            Intent intent = new Intent(this, AlertsListActivity.class);
-            startActivity(intent);
-        });
-
-        infoView.setOnClickListener(view -> {
-            Intent intent = new Intent(this, InfoActivity.class);
-            startActivity(intent);
-        });
-        */
+        //============================================================================================
+        // Init NFC
+        //============================================================================================
+        pendingIntent = PendingIntent.getActivity(
+                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        IntentFilter mifare = new IntentFilter((NfcAdapter.ACTION_TECH_DISCOVERED));
+        filters = new IntentFilter[] { mifare };
+        techs = new String[][] { new String[] {NfcA.class.getName()}};
+        adapter = NfcAdapter.getDefaultAdapter(this);
+        username = findViewById(R.id.username);
 
         FragmentTransaction ft = getSupportFragmentManager()
                 .beginTransaction();
@@ -104,6 +88,35 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             permissionsManager.requestLocationPermissions(this);
         }
     }
+
+    //============================================================================================
+    // Début recherche NFC
+    //============================================================================================
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        byte[] id = tag.getId();
+        ByteBuffer wrapped = ByteBuffer.wrap(id);
+        wrapped.order(ByteOrder.LITTLE_ENDIAN);
+        int signedInt = wrapped.getInt();
+        long number = signedInt & 0xfffffffl;
+        ident(number);
+    }
+
+    public void ident (long number) {
+        Log.d(TAG, "number: "+number);
+        if(userCertified.contains(""+number)){
+            username.setText("user N°" + number);
+        } else {
+
+            Toast toast = Toast.makeText(this, "Connection refusée", Toast.LENGTH_LONG);
+            toast.show();
+        }
+    }
+    //============================================================================================
+    // Fin recherche NFC
+    //============================================================================================
 
     @Override
     protected void onStart() {
@@ -155,12 +168,4 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-
-    /*
-    public int pxToDp(int px) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        return (int)((px * displayMetrics.density) + 0.5);
-    }
-    */
-
 }

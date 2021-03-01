@@ -122,7 +122,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        AuthenticationService auth = new AuthenticationService();
+        AuthenticationService auth = AuthenticationService.getInstance();
 
         // Create an Icon object for the marker to use
         IconFactory iconFactory = IconFactory.getInstance(Objects.requireNonNull(getActivity()));
@@ -163,11 +163,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                     if (anotherStatement != null) {
                         if (anotherStatement.getAssignedTo() == 0) {
-                            alertPage.setEnabled(auth.getId() != 0);
+                            alertPage.setEnabled(auth.getCurrentUser() != 0);
                             alertPage.setText("Je prends en charge l'alerte");
                             Statement finalStatement = anotherStatement;
                             alertPage.setOnClickListener(view1 -> {
-                                finalStatement.setAssignedTo(auth.getId()); // need reload
+                                finalStatement.setAssignedTo(auth.getCurrentUser()); // need reload
                                 String btnMessage = "Gérer l'alerte";
                                 alertPage.setText(btnMessage);
                                 marker.setIcon(iconInProgress);
@@ -176,8 +176,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             alertPage.setEnabled(false);
                             String btnMessage = "Traité par "+ anotherStatement.getAssignedTo();
                             alertPage.setText(btnMessage);
-                        } else if (anotherStatement.getAssignedTo() == auth.getId()) {
-                            alertPage.setEnabled(auth.getId() != 0);
+                        } else if (anotherStatement.getAssignedTo() == auth.getCurrentUser()) {
+                            alertPage.setEnabled(auth.getCurrentUser() != 0);
                             String btnMessage = "Gérer l'alerte";
                             alertPage.setText(btnMessage);
                             Statement finalStatement1 = anotherStatement;
@@ -188,8 +188,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 marker.setIcon(iconInProgress);
                             });
                         } else {
-                            alertPage.setEnabled(auth.getId() != 0);
-                            String btnMessage = "Assigné à "+ auth.getId();
+                            alertPage.setEnabled(auth.getCurrentUser() != 0);
+                            String btnMessage = "Assigné à "+ auth.getCurrentUser();
                             alertPage.setText(btnMessage);
                             Statement finalStatement2 = anotherStatement;
                             alertPage.setOnClickListener(view1 -> {
