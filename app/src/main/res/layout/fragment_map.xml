@@ -26,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:enabled="false"
             style="?android:attr/buttonBarButtonStyle"
             android:text="@string/take_alert"
             android:id="@+id/take_alert"/>

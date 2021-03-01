@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.aufeulespompiers.R;
+import com.example.aufeulespompiers.Services.AuthenticationService;
 import com.example.aufeulespompiers.Services.FirestoreService;
 import com.example.aufeulespompiers.activities.AlertActivity;
 import com.example.aufeulespompiers.activities.MainActivity;
@@ -84,7 +85,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.onCreate(savedInstanceState); // prob with security/telemetry ??
         mapView.getMapAsync(this);
 
-        alertPage = view.findViewById(R.id.alert_page);
+        alertPage = view.findViewById(R.id.take_alert);
 
 
         alertPage.setEnabled(true/*Replace by isAuth condition*/);
@@ -110,6 +111,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         this.mapboxMap = mapboxMap;
         mapboxMap.setStyle(new Style.Builder().fromUri(STYLE_URI)
                     , this::enableLocationComponent);
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
 
         FirestoreService firestoreService = new FirestoreService();
@@ -119,6 +121,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 firestoreService.modifyStatmentResolve(tempStatement);
             }
         });
+
+        AuthenticationService auth = new AuthenticationService();
 
         // Create an Icon object for the marker to use
         IconFactory iconFactory = IconFactory.getInstance(Objects.requireNonNull(getActivity()));
@@ -134,6 +138,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         firestoreService.getAlerts(result -> {
             Log.d(TAG, "onAlertListReceived: " + result.toString());
+
             for (Statement statement : result) {
                 String snippet = "Heure : " + simpleDateFormat.format(statement.getDate().toDate())
                         + "\nTempérature : " + statement.getTemp() + "°C\nStatus : " + "Non attribué";
@@ -141,33 +146,76 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         .position(new LatLng(statement.getPosition().getLatitude(),
                                 statement.getPosition().getLongitude()))
                         .setSnippet(snippet)
-                        .setIcon(iconInProgress)
+                        .setIcon((statement.getAssignedTo() == 0)? iconNotGood : (statement.getResolve())? iconGood : iconInProgress)
                         .title(statement.getBeacon()));
 
                 mapboxMap.setOnMarkerClickListener(marker -> {
                     for (Marker aMarker : mapboxMap.getMarkers()) aMarker.hideInfoWindow();
                     marker.showInfoWindow(mapboxMap, mapView);
+
                     mapboxMap.getUiSettings().setAllGesturesEnabled(false);
 
+                    Statement anotherStatement = null;
+                    for (Statement aStatement : result) {
+                        if (marker.getPosition().getLatitude() == aStatement.getPosition().getLatitude() && marker.getPosition().getLongitude() == aStatement.getPosition().getLongitude())
+                            anotherStatement = aStatement;
+                    }
+
+                    if (anotherStatement != null) {
+                        if (anotherStatement.getAssignedTo() == 0) {
+                            alertPage.setEnabled(auth.getId() != 0);
+                            alertPage.setText("Je prends en charge l'alerte");
+                            Statement finalStatement = anotherStatement;
+                            alertPage.setOnClickListener(view1 -> {
+                                finalStatement.setAssignedTo(auth.getId()); // need reload
+                                String btnMessage = "Gérer l'alerte";
+                                alertPage.setText(btnMessage);
+                                marker.setIcon(iconInProgress);
+                            });
+                        } else if (anotherStatement.getResolve()) {
+                            alertPage.setEnabled(false);
+                            String btnMessage = "Traité par "+ anotherStatement.getAssignedTo();
+                            alertPage.setText(btnMessage);
+                        } else if (anotherStatement.getAssignedTo() == auth.getId()) {
+                            alertPage.setEnabled(auth.getId() != 0);
+                            String btnMessage = "Gérer l'alerte";
+                            alertPage.setText(btnMessage);
+                            Statement finalStatement1 = anotherStatement;
+                            alertPage.setOnClickListener(view1 -> {
+                                Intent intent = new Intent(getActivity(), AlertActivity.class);
+                                intent.putExtra("statementId", finalStatement1.getId());
+                                startActivity(intent);
+                                marker.setIcon(iconInProgress);
+                            });
+                        } else {
+                            alertPage.setEnabled(auth.getId() != 0);
+                            String btnMessage = "Assigné à "+ auth.getId();
+                            alertPage.setText(btnMessage);
+                            Statement finalStatement2 = anotherStatement;
+                            alertPage.setOnClickListener(view1 -> {
+                                Intent intent = new Intent(getActivity(), AlertActivity.class);
+                                intent.putExtra("statementId", finalStatement2.getId());
+                                startActivity(intent);
+                            });
+                        }
+                    }
+
                     return true;
                 });
 
-                alertPage.setOnClickListener(view1 -> {
-                    Intent intent = new Intent(getActivity(), AlertActivity.class);
-                    intent.putExtra("statementId", statement.getId());
-                    startActivity(intent);
-                });
 
-                mapView.setOnTouchListener((v, event) -> {
-                    for (Marker aMarker : mapboxMap.getMarkers()) aMarker.hideInfoWindow();
-                    mapboxMap.getUiSettings().setAllGesturesEnabled(true);
-                    v.onTouchEvent(event);
-                    return true;
-                });
 
             }
         });
 
+        mapView.setOnTouchListener((v, event) -> {
+            for (Marker aMarker : mapboxMap.getMarkers()) aMarker.hideInfoWindow();
+            mapboxMap.getUiSettings().setAllGesturesEnabled(true);
+            v.onTouchEvent(event);
+            alertPage.setEnabled(false);
+            alertPage.setText("Sélectionner une alerte");
+            return true;
+        });
 
     }
 
