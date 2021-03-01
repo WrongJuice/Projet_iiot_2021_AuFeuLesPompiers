@@ -1,9 +1,10 @@
-package com.example.aufeulespompiers.services;
+package com.example.aufeulespompiers.Services;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.aufeulespompiers.interfaces.OnAlertReceivedListener;
 import com.example.aufeulespompiers.interfaces.OnStatementReceivedListener;
 import com.example.aufeulespompiers.model.Statement;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,5 +60,38 @@ public class FirestoreService {
     
     public void modifyStatmentResolve(Statement statement){
         db.collection("alerts").document(statement.getId()).update("resolve", statement.getResolve());
+    }
+
+    public void getAlerts(OnAlertReceivedListener listener) {
+        try{
+            db.collection("alerts").whereEqualTo("resolve",false)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                ArrayList<Statement> alertList = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                    Log.d(TAG, "onComplete: " + document.getData().get("temp"));
+                                    Statement tempStatement = new Statement();
+                                    tempStatement.setId(document.getId());
+                                    tempStatement.setBeacon((String) document.getData().get("beacon"));
+                                    tempStatement.setDate((Timestamp) document.getData().get("date"));
+                                    tempStatement.setPosition((GeoPoint) document.getData().get("position"));
+                                    tempStatement.setResolve((boolean) document.getData().get("resolve"));
+                                    tempStatement.setTemp((long) document.getData().get("temp"));
+                                    alertList.add(tempStatement);
+                                }
+                                listener.onAlertListReceived(alertList);
+
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+        } finally {
+            Log.d(TAG, "getStatements: finish");
+        }
     }
 }

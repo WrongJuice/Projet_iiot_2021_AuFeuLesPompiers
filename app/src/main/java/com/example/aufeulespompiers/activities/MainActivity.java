@@ -14,11 +14,12 @@ import android.widget.RelativeLayout;
 
 import com.example.aufeulespompiers.R;
 import com.example.aufeulespompiers.Services.DataManager;
+import com.example.aufeulespompiers.Services.FirestoreService;
 import com.example.aufeulespompiers.adapters.AlertAdapter;
+import com.example.aufeulespompiers.interfaces.OnAlertReceivedListener;
 import com.example.aufeulespompiers.interfaces.OnStatementReceivedListener;
 import com.example.aufeulespompiers.model.Alert;
 import com.example.aufeulespompiers.model.Statement;
-import com.example.aufeulespompiers.services.FirestoreService;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
@@ -58,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
                     tempStatement.setResolve(false);
                     firestoreService.modifyStatmentResolve(tempStatement);
                 }
+            }
+        });
+        firestoreService.getAlerts(new OnAlertReceivedListener() {
+            @Override
+            public void onAlertListReceived(ArrayList<Statement> result) {
+                Log.d(TAG, "onAlertListReceived: " + result.toString());
             }
         });
 
