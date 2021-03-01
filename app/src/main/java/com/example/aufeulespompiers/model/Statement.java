@@ -11,6 +11,7 @@ public class Statement {
     private GeoPoint position;
     private Boolean resolve;
     private float temp;
+    private long assignedTo;
 
     public Statement(String id, String beacon, Timestamp date, GeoPoint position, Boolean resolve, float temp) {
         this.id = id;
@@ -22,6 +23,14 @@ public class Statement {
     }
 
     public Statement() {
+    }
+
+    public long getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(long assignedTo) {
+        this.assignedTo = assignedTo;
     }
 
     public String getId() {
