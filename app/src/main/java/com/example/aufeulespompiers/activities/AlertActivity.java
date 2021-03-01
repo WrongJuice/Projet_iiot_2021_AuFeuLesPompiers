@@ -52,6 +52,7 @@ public class AlertActivity extends AppCompatActivity {
                 temperature.setText(String.valueOf(result.getTemp()) );
                 latitude_example.setText(String.valueOf(result.getPosition().getLatitude()));
                 longitude_example.setText(String.valueOf(result.getPosition().getLongitude()));
+                someone.setText(String.valueOf(result.getAssignedTo()));
             }
         });
 

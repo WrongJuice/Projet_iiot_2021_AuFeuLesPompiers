@@ -47,6 +47,7 @@ public class FirestoreService {
                                     tempStatement.setPosition((GeoPoint) document.getData().get("position"));
                                     tempStatement.setResolve((boolean) document.getData().get("resolve"));
                                     tempStatement.setTemp((long) document.getData().get("temp"));
+                                    tempStatement.setAssignedTo((long) document.getData().get("assignedTo"));
                                     statementList.add(tempStatement);
                                 }
                                 listener.onStatementListReceived(statementList);
@@ -63,6 +64,10 @@ public class FirestoreService {
     
     public void modifyStatmentResolve(Statement statement){
         db.collection("alerts").document(statement.getId()).update("resolve", statement.getResolve());
+    }
+
+    public void modifyStatmentAssignedTo(Statement statement){
+        db.collection("alerts").document(statement.getId()).update("assignedTo", statement.getAssignedTo());
     }
 
     public void getAlerts(OnAlertReceivedListener listener) {
@@ -84,6 +89,7 @@ public class FirestoreService {
                                     tempStatement.setPosition((GeoPoint) document.getData().get("position"));
                                     tempStatement.setResolve((boolean) document.getData().get("resolve"));
                                     tempStatement.setTemp((long) document.getData().get("temp"));
+                                    tempStatement.setAssignedTo((long) document.getData().get("assignedTo"));
                                     alertList.add(tempStatement);
                                 }
                                 listener.onAlertListReceived(alertList);
@@ -112,6 +118,7 @@ public class FirestoreService {
                     tempStatement.setPosition((GeoPoint) document.getData().get("position"));
                     tempStatement.setResolve((boolean) document.getData().get("resolve"));
                     tempStatement.setTemp((long) document.getData().get("temp"));
+                    tempStatement.setAssignedTo((long) document.getData().get("assignedTo"));
                     listener.onAlertByIdListReceived(tempStatement);
                 }
             });
