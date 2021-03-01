@@ -18,4 +18,16 @@
     <string name="mapbox_access_token">pk.eyJ1Ijoid3JvbmdqdWljZSIsImEiOiJja2xiajk3aHYwZm41MnBzNHpsbWZkZDNlIn0.ehH9r8d1OoVfwB5je_pnGA</string>
     <string name="user_location_permission_explanation">Localization authorization needed.</string>
     <string name="user_location_permission_not_granted">You have not granted location authorization.</string>
+    <string name="sensor_title">inituléBalise</string>
+    <string name="statement_hour">Heure de la mesure :</string>
+    <string name="statement_hour_example">12:36</string>
+    <string name="coordinates">Coordonnées GPS :</string>
+    <string name="latitude">Latitude :</string>
+    <string name="longitude">Longitude :</string>
+    <string name="latitude_example">48.862725</string>
+    <string name="longitude_example">2.287592</string>
+    <string name="attributed_to">Attribué à : </string>
+    <string name="someone">personne</string>
+    <string name="statement_status">En cours de traitement</string>
+    <string name="back_to_map">Retour à la carte</string>
 </resources>

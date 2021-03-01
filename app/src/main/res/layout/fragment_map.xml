@@ -18,6 +18,7 @@
         android:orientation="horizontal"
         style="?android:attr/buttonBarStyle"
         android:gravity="center"
+        android:enabled="false"
         android:layout_alignParentBottom="true"
         android:id="@+id/control_button_bar">
 
@@ -37,7 +38,7 @@
             android:layout_marginEnd="10dp"
             style="?android:attr/buttonBarButtonStyle"
             android:text="@string/go_to_alert_page"
-            android:id="@+id/reset_tracking"/>
+            android:id="@+id/alert_page"/>
 
     </LinearLayout>
 

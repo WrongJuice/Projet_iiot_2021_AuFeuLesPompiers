@@ -1,12 +1,14 @@
 package com.example.aufeulespompiers.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -15,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.aufeulespompiers.R;
+import com.example.aufeulespompiers.activities.AlertActivity;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -71,6 +74,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         controlButtonBar.setOnClickListener(view1 -> {
             // TODO
             controlButtonBar.setEnabled(false/*Replace by isAuth condition*/);
+        });
+
+        Button alertPage = view.findViewById(R.id.alert_page);
+        alertPage.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getActivity(), AlertActivity.class);
+            intent.putExtra("statementId", "fWVp5tej0bD7DkKYUeOp"); // generalize
+            startActivity(intent);
         });
 
         return view;
