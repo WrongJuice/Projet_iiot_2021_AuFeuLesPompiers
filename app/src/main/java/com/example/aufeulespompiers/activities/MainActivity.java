@@ -1,6 +1,22 @@
 package com.example.aufeulespompiers.activities;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+
+import com.example.aufeulespompiers.R;
+import com.example.aufeulespompiers.Services.DataManager;
+import com.example.aufeulespompiers.Services.FirestoreService;
+import com.example.aufeulespompiers.adapters.AlertAdapter;
+import com.example.aufeulespompiers.interfaces.OnAlertReceivedListener;
+import com.example.aufeulespompiers.interfaces.OnStatementReceivedListener;
+import com.example.aufeulespompiers.model.Alert;
+import com.example.aufeulespompiers.model.Statement;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,16 +28,18 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements PermissionsListener {
 
+    private static final String TAG = "MainActivity";
     /*
     RelativeLayout alertView;
     RelativeLayout infoView;
     RelativeLayout sensorView;
-    ListView alertsList;
-     */
+    ListView alertsList;*/
+    private FirestoreService firestoreService;
 
     // distance part
     private PermissionsManager permissionsManager;
@@ -44,9 +62,27 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         DataManager.generateFakesData();
         ArrayList<Alert> alerts = DataManager.getAlerts();
         AlertAdapter alertAdapter = new AlertAdapter(this, alerts);
-        alertsList.setAdapter(alertAdapter);
+        alertsList.setAdapter(alertAdapter);*/
 
-        if (alerts.isEmpty()) {
+        firestoreService = new FirestoreService();
+        firestoreService.getStatements(new OnStatementReceivedListener() {
+            @Override
+            public void onStatementListReceived(ArrayList<Statement> result) {
+                Log.d(TAG, "onStatementListReceived: " + result.toString());
+                for(Statement tempStatement : result){
+                    tempStatement.setResolve(false);
+                    firestoreService.modifyStatmentResolve(tempStatement);
+                }
+            }
+        });
+        firestoreService.getAlerts(new OnAlertReceivedListener() {
+            @Override
+            public void onAlertListReceived(ArrayList<Statement> result) {
+                Log.d(TAG, "onAlertListReceived: " + result.toString());
+            }
+        });
+
+        /*if (alerts.isEmpty()) {
             alertsList.setVisibility(View.GONE);
             findViewById(R.id.no_alert).setVisibility(View.VISIBLE);
         } else {
