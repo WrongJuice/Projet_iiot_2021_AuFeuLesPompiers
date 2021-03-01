@@ -2,10 +2,12 @@ package com.example.aufeulespompiers.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,7 +18,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.aufeulespompiers.R;
+import com.example.aufeulespompiers.Services.AuthenticationService;
+import com.example.aufeulespompiers.Services.FirestoreService;
 import com.example.aufeulespompiers.activities.AlertActivity;
+import com.example.aufeulespompiers.activities.MainActivity;
+import com.example.aufeulespompiers.model.Statement;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -24,6 +30,11 @@ import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
@@ -34,15 +45,23 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Objects;
 
 import static android.os.Looper.getMainLooper;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.fromResource;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
+
+    private static final String TAG = "MapFragment";
 
     // views
     private MapView mapView;
     private MapboxMap mapboxMap;
+    private Button alertPage;
 
     View view;
 
@@ -66,17 +85,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.onCreate(savedInstanceState); // prob with security/telemetry ??
         mapView.getMapAsync(this);
 
+        alertPage = view.findViewById(R.id.take_alert);
 
-        Button takeAlert = view.findViewById(R.id.take_alert);
-        Button alertPage = view.findViewById(R.id.alert_page);
+
         alertPage.setEnabled(true/*Replace by isAuth condition*/);
-        takeAlert.setEnabled(true/*Replace by isAuth condition*/);
 
-        alertPage.setOnClickListener(view1 -> {
-            Intent intent = new Intent(getActivity(), AlertActivity.class);
-            intent.putExtra("statementId", "fWVp5tej0bD7DkKYUeOp"); // generalize
-            startActivity(intent);
-        });
 
         return view;
     }
@@ -92,10 +105,118 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.onDestroy();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
-        mapboxMap.setStyle(new Style.Builder().fromUri(STYLE_URI), this::enableLocationComponent);
+        mapboxMap.setStyle(new Style.Builder().fromUri(STYLE_URI)
+                    , this::enableLocationComponent);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
+
+        FirestoreService firestoreService = new FirestoreService();
+        firestoreService.getStatements(result -> {
+            for(Statement tempStatement : result){
+                tempStatement.setResolve(false);
+                firestoreService.modifyStatmentResolve(tempStatement);
+            }
+        });
+
+        AuthenticationService auth = new AuthenticationService();
+
+        // Create an Icon object for the marker to use
+        IconFactory iconFactory = IconFactory.getInstance(Objects.requireNonNull(getActivity()));
+
+        Icon iconInProgress = iconFactory.fromBitmap(BitmapFactory.decodeResource(
+                getActivity().getResources(), R.drawable.ic_baseline_location_on_in_progress));
+
+        Icon iconNotGood = iconFactory.fromBitmap(BitmapFactory.decodeResource(
+                getActivity().getResources(), R.drawable.ic_baseline_location_on_not_good));
+
+        Icon iconGood = iconFactory.fromBitmap(BitmapFactory.decodeResource(
+                getActivity().getResources(), R.drawable.ic_baseline_location_on_good));
+
+        firestoreService.getAlerts(result -> {
+            Log.d(TAG, "onAlertListReceived: " + result.toString());
+
+            for (Statement statement : result) {
+                String snippet = "Heure : " + simpleDateFormat.format(statement.getDate().toDate())
+                        + "\nTempérature : " + statement.getTemp() + "°C\nStatus : " + "Non attribué";
+                mapboxMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(statement.getPosition().getLatitude(),
+                                statement.getPosition().getLongitude()))
+                        .setSnippet(snippet)
+                        .setIcon((statement.getAssignedTo() == 0)? iconNotGood : (statement.getResolve())? iconGood : iconInProgress)
+                        .title(statement.getBeacon()));
+
+                mapboxMap.setOnMarkerClickListener(marker -> {
+                    for (Marker aMarker : mapboxMap.getMarkers()) aMarker.hideInfoWindow();
+                    marker.showInfoWindow(mapboxMap, mapView);
+
+                    mapboxMap.getUiSettings().setAllGesturesEnabled(false);
+
+                    Statement anotherStatement = null;
+                    for (Statement aStatement : result) {
+                        if (marker.getPosition().getLatitude() == aStatement.getPosition().getLatitude() && marker.getPosition().getLongitude() == aStatement.getPosition().getLongitude())
+                            anotherStatement = aStatement;
+                    }
+
+                    if (anotherStatement != null) {
+                        if (anotherStatement.getAssignedTo() == 0) {
+                            alertPage.setEnabled(auth.getId() != 0);
+                            alertPage.setText("Je prends en charge l'alerte");
+                            Statement finalStatement = anotherStatement;
+                            alertPage.setOnClickListener(view1 -> {
+                                finalStatement.setAssignedTo(auth.getId()); // need reload
+                                String btnMessage = "Gérer l'alerte";
+                                alertPage.setText(btnMessage);
+                                marker.setIcon(iconInProgress);
+                            });
+                        } else if (anotherStatement.getResolve()) {
+                            alertPage.setEnabled(false);
+                            String btnMessage = "Traité par "+ anotherStatement.getAssignedTo();
+                            alertPage.setText(btnMessage);
+                        } else if (anotherStatement.getAssignedTo() == auth.getId()) {
+                            alertPage.setEnabled(auth.getId() != 0);
+                            String btnMessage = "Gérer l'alerte";
+                            alertPage.setText(btnMessage);
+                            Statement finalStatement1 = anotherStatement;
+                            alertPage.setOnClickListener(view1 -> {
+                                Intent intent = new Intent(getActivity(), AlertActivity.class);
+                                intent.putExtra("statementId", finalStatement1.getId());
+                                startActivity(intent);
+                                marker.setIcon(iconInProgress);
+                            });
+                        } else {
+                            alertPage.setEnabled(auth.getId() != 0);
+                            String btnMessage = "Assigné à "+ auth.getId();
+                            alertPage.setText(btnMessage);
+                            Statement finalStatement2 = anotherStatement;
+                            alertPage.setOnClickListener(view1 -> {
+                                Intent intent = new Intent(getActivity(), AlertActivity.class);
+                                intent.putExtra("statementId", finalStatement2.getId());
+                                startActivity(intent);
+                            });
+                        }
+                    }
+
+                    return true;
+                });
+
+
+
+            }
+        });
+
+        mapView.setOnTouchListener((v, event) -> {
+            for (Marker aMarker : mapboxMap.getMarkers()) aMarker.hideInfoWindow();
+            mapboxMap.getUiSettings().setAllGesturesEnabled(true);
+            v.onTouchEvent(event);
+            alertPage.setEnabled(false);
+            alertPage.setText("Sélectionner une alerte");
+            return true;
+        });
+
     }
 
     /**
@@ -198,6 +319,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 if (fragment.mapboxMap != null && result.getLastLocation() != null) {
                     fragment.mapboxMap.getLocationComponent().forceLocationUpdate(result.getLastLocation());
                 }
+
+
             }
         }
 
