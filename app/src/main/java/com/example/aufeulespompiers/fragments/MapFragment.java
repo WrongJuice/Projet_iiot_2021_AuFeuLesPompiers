@@ -2,6 +2,7 @@ package com.example.aufeulespompiers.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +24,13 @@ import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsManager;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Marker;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
@@ -32,11 +39,17 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static android.os.Looper.getMainLooper;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -95,7 +108,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
-        mapboxMap.setStyle(new Style.Builder().fromUri(STYLE_URI), this::enableLocationComponent);
+        mapboxMap.setStyle(new Style.Builder().fromUri(STYLE_URI)
+                    , this::enableLocationComponent);
+
+        mapboxMap.addMarker(new MarkerOptions()
+                .position(new LatLng(48.85819, 2.29458))
+                .setSnippet("lol\nghj")
+                .title("Eiffel Tower"));
+
+        mapboxMap.setOnMarkerClickListener(marker -> {
+            marker.showInfoWindow(mapboxMap, mapView);
+            // Show a toast with the title of the selected marker
+            System.out.println("markerText = " + marker.getSnippet());
+            return true;
+        });
     }
 
     /**
@@ -198,6 +224,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 if (fragment.mapboxMap != null && result.getLastLocation() != null) {
                     fragment.mapboxMap.getLocationComponent().forceLocationUpdate(result.getLastLocation());
                 }
+
+
             }
         }
 
