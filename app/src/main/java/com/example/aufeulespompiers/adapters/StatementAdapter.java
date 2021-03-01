@@ -20,8 +20,8 @@ public class StatementAdapter extends ArrayAdapter<SensorStatement> {
     Context context;
 
     public StatementAdapter(@NonNull Context context, @NonNull List<SensorStatement> objects) {
-            super(context, R.layout.sensor_statement_item, objects);
-            this.context = context;
+        super(context, R.layout.sensor_statement_item, objects);
+        this.context = context;
     }
 
     @NonNull
