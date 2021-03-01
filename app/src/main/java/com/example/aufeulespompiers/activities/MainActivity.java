@@ -32,14 +32,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements PermissionsListener {
-
-    private static final String TAG = "MainActivity";
     /*
     RelativeLayout alertView;
     RelativeLayout infoView;
     RelativeLayout sensorView;
     ListView alertsList;*/
-    private FirestoreService firestoreService;
 
     // distance part
     private PermissionsManager permissionsManager;
@@ -63,24 +60,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         ArrayList<Alert> alerts = DataManager.getAlerts();
         AlertAdapter alertAdapter = new AlertAdapter(this, alerts);
         alertsList.setAdapter(alertAdapter);*/
-
-        firestoreService = new FirestoreService();
-        firestoreService.getStatements(new OnStatementReceivedListener() {
-            @Override
-            public void onStatementListReceived(ArrayList<Statement> result) {
-                Log.d(TAG, "onStatementListReceived: " + result.toString());
-                for(Statement tempStatement : result){
-                    tempStatement.setResolve(false);
-                    firestoreService.modifyStatmentResolve(tempStatement);
-                }
-            }
-        });
-        firestoreService.getAlerts(new OnAlertReceivedListener() {
-            @Override
-            public void onAlertListReceived(ArrayList<Statement> result) {
-                Log.d(TAG, "onAlertListReceived: " + result.toString());
-            }
-        });
 
         /*if (alerts.isEmpty()) {
             alertsList.setVisibility(View.GONE);

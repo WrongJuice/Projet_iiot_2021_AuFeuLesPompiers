@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="in_progress">#f57716</color>
+    <color name="not_good">#eb4034</color>
+    <color name="good">#3ac942</color>
 </resources>
