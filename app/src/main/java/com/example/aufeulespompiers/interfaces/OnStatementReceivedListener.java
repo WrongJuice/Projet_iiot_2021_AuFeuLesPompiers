@@ -4,6 +4,7 @@ import com.example.aufeulespompiers.model.Statement;
 
 import java.util.ArrayList;
 
+// Use for manage the Asynchronous return of firestore request
 public interface OnStatementReceivedListener {
     void onStatementListReceived(ArrayList<Statement> result);
 }

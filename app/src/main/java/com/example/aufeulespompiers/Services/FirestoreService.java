@@ -28,6 +28,7 @@ public class FirestoreService {
     public FirestoreService() {
     }
 
+    // Get all alerts collection
     public void getStatements(OnStatementReceivedListener listener) {
         try{
             db.collection("alerts")
@@ -61,15 +62,16 @@ public class FirestoreService {
             Log.d(TAG, "getStatements: finish");
         }
     }
-    
+
+    // Modify resolve attribut statement
     public void modifyStatmentResolve(Statement statement){
         db.collection("alerts").document(statement.getId()).update("resolve", statement.getResolve());
     }
-
+    // Modify assignedTo attribut statement
     public void modifyStatmentAssignedTo(Statement statement){
         db.collection("alerts").document(statement.getId()).update("assignedTo", statement.getAssignedTo());
     }
-
+    // Get all statement with resolve attribute equal false
     public void getAlerts(OnAlertReceivedListener listener) {
         try{
             db.collection("alerts").whereEqualTo("resolve",false)
@@ -103,7 +105,7 @@ public class FirestoreService {
             Log.d(TAG, "getAlertById: finish");
         }
     }
-
+    // Get on statement equal to her id
     public void getAlertById(String id, OnAlertByIdReceivedListener listener) {
         try{
             db.collection("alerts").document(id)

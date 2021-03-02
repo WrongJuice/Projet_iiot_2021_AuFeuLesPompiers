@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     //============================================================================================
     // Début recherche NFC
     //============================================================================================
+    // On new pendingIntent , convertie les données de l'objet NFC en long
     @Override
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -106,8 +107,10 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         ident(number);
     }
 
+
     public void ident (long number) {
         Log.d(TAG, "number: "+number);
+        // test if user is authorized
         if(auth.getUserAutrorized().contains(number)){
             username.setText("user N°" + number);
             auth.setCurrentUser(number);
@@ -174,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    // Use for reload data map and refresh marker with actual data
     public void reloadMap(){
         FragmentTransaction ft = getSupportFragmentManager()
                 .beginTransaction();

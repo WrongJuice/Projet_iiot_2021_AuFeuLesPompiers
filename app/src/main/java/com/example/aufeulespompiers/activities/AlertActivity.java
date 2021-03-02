@@ -126,6 +126,7 @@ public class AlertActivity extends Activity implements SurfaceHolder.Callback {
     //============================================================================================
     // Start beacon discovery
     //============================================================================================
+    // Scan bluetooth devices every 5 seconds for 5 seconds
     private Runnable scanRunnable = new Runnable() {
         @Override
         public void run() {
@@ -210,10 +211,13 @@ public class AlertActivity extends Activity implements SurfaceHolder.Callback {
     }
 
     @Override
+    //Trigger when the surface is created
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         try {
             mCamera.setPreviewDisplay(holder);
+            // set orientation camera
             mCamera.setDisplayOrientation(90);
+            // start capture camera vision
             mCamera.startPreview();
         } catch (IOException e) {
             e.printStackTrace();
@@ -233,6 +237,7 @@ public class AlertActivity extends Activity implements SurfaceHolder.Callback {
 
     @Override
     protected void onResume() {
+        // When the activity restart, reopen the camera preview
         super.onResume();
         mCamera = Camera.open();
     }
@@ -240,6 +245,7 @@ public class AlertActivity extends Activity implements SurfaceHolder.Callback {
     @Override
     protected void onPause() {
         super.onPause();
+        // When the activity is quit, stop the camera preview
         mCamera.release();
     }
 
