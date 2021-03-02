@@ -171,6 +171,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             anotherStatement = aStatement;
                     }
 
+                    // control button text and role assignation
                     if (anotherStatement != null) {
                         if (anotherStatement.getAssignedTo() == 0) {
                             alertPage.setEnabled(auth.getCurrentUser() != 0);

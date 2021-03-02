@@ -42,6 +42,7 @@ public class StatementAdapter extends ArrayAdapter<Statement> {
                     .inflate(R.layout.sensor_statement_item, parent, false);
         }
 
+        // if not logged
         if (statement.getAssignedTo() == 0) {
             title.setVisibility(View.GONE);
         } else {

@@ -13,6 +13,7 @@ import com.example.aufeulespompiers.model.Alert;
 
 import java.util.ArrayList;
 
+// Activity not used
 public class AlertsListActivity extends AppCompatActivity {
 
     ListView alertsList;

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.aufeulespompiers.R;
 
+// Activity not used
 public class InfoActivity extends AppCompatActivity {
 
     @Override

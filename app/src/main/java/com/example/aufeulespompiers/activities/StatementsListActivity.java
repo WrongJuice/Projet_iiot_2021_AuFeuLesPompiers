@@ -25,10 +25,12 @@ public class StatementsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statements_list);
 
+        // get every statements
         FirestoreService firestoreService = new FirestoreService();
         ArrayList<Statement> statements = new ArrayList<>();
         firestoreService.getStatements(result -> {
             for (Statement statement : result)
+                // get only the statements of this beacon
                 if (statement.getBeacon().equals(getIntent().getStringExtra("statementId")))
                     statements.add(statement);
         });
