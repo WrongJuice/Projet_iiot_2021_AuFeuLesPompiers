@@ -129,26 +129,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Create an Icon object for the marker to use
         IconFactory iconFactory = IconFactory.getInstance(Objects.requireNonNull(getActivity()));
 
+        // alert in progress
         Icon iconInProgress = iconFactory.fromBitmap(BitmapFactory.decodeResource(
                 getActivity().getResources(), R.drawable.ic_baseline_location_on_in_progress));
 
+        // alert not assigned
         Icon iconNotGood = iconFactory.fromBitmap(BitmapFactory.decodeResource(
                 getActivity().getResources(), R.drawable.ic_baseline_location_on_not_good));
 
+        // alert treated
         Icon iconGood = iconFactory.fromBitmap(BitmapFactory.decodeResource(
                 getActivity().getResources(), R.drawable.ic_baseline_location_on_good));
 
         firestoreService.getAlerts(result -> {
-            Log.d(TAG, "onAlertListReceived: " + result.toString());
 
             for (Statement statement : result) {
                 String snippet = "Heure : " + simpleDateFormat.format(statement.getDate().toDate())
                         + "\nTempérature : " + statement.getTemp() + "°C\n";
-                if(statement.getAssignedTo() == 0){
+
+                if(statement.getAssignedTo() == 0)
                     snippet = snippet + "Status : " + "Non attribué";
-                } else {
+                else
                     snippet = snippet + "Status : " + statement.getAssignedTo();
-                }
+
                 mapboxMap.addMarker(new MarkerOptions()
                         .position(new LatLng(statement.getPosition().getLatitude(),
                                 statement.getPosition().getLongitude()))
@@ -168,25 +171,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             anotherStatement = aStatement;
                     }
 
+                    // control button text and role assignation
                     if (anotherStatement != null) {
                         if (anotherStatement.getAssignedTo() == 0) {
                             alertPage.setEnabled(auth.getCurrentUser() != 0);
-                            alertPage.setText("Je prends en charge l'alerte");
+                            alertPage.setText(getResources().getString(R.string.take_alert_in_charge));
                             Statement finalStatement = anotherStatement;
                             alertPage.setOnClickListener(view1 -> {
-                                finalStatement.setAssignedTo(auth.getCurrentUser());// need reload
+                                finalStatement.setAssignedTo(auth.getCurrentUser());
                                 firestoreService.modifyStatmentAssignedTo(finalStatement);
-                                String btnMessage = "Gérer l'alerte";
-                                alertPage.setText(btnMessage);
+                                alertPage.setText(getResources().getString(R.string.manage_alert));
+                                marker.setIcon(iconInProgress);
+                                Intent intent = new Intent(getActivity(), AlertActivity.class);
+                                intent.putExtra("statementId", finalStatement.getId());
+                                startActivity(intent);
                                 marker.setIcon(iconInProgress);
                             });
                         } else if (anotherStatement.getResolve()) {
                             alertPage.setEnabled(false);
-                            String btnMessage = "Traité par "+ anotherStatement.getAssignedTo();
+                            String btnMessage = getResources().getString(R.string.treated_by) + " " + anotherStatement.getAssignedTo();
                             alertPage.setText(btnMessage);
                         } else if (anotherStatement.getAssignedTo() == auth.getCurrentUser()) {
                             alertPage.setEnabled(auth.getCurrentUser() != 0);
-                            String btnMessage = "Gérer l'alerte";
+                            String btnMessage = getResources().getString(R.string.manage_alert);
                             alertPage.setText(btnMessage);
                             Statement finalStatement1 = anotherStatement;
                             alertPage.setOnClickListener(view1 -> {

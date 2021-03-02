@@ -191,16 +191,27 @@
 
     </LinearLayout>
 
-
-    <Button
-        android:id="@+id/treat_alert"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:layout_weight="0"
-        android:enabled="false"
-        android:text="@string/alert_traited" />
+        android:layout_height="wrap_content">
 
+        <Button
+            android:id="@+id/treat_alert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="50"
+            android:enabled="false"
+            android:text="@string/alert_traited" />
+
+        <Button
+            android:id="@+id/history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="50"
+            android:onClick="statementHistory"
+            android:text="@string/statement_history" />
+    </LinearLayout>
 
 </LinearLayout>
