@@ -2,7 +2,7 @@
     <string name="app_name">Au Feu Les Pompiers</string>
     <string name="not_authenticated">Non authentifié</string>
     <string name="user_icon">icone de compte utilisateur</string>
-    <string name="statement_history">Historique des relevés</string>
+    <string name="statement_history">Historique du beacon</string>
     <string name="alerts_to_be_processed">Alertes à traiter</string>
     <string name="additional_information">Informations supplémentaires</string>
     <string name="no_alerts_to_process">Aucune alerte à traiter</string>
@@ -14,6 +14,7 @@
     <string name="no_statement">Aucun relevé</string>
     <string name="alert_traited">Traiter l\'alerte</string>
     <string name="take_alert">Sélectionner une alerte</string>
+    <string name="take_alert_in_charge">Je prends en charge l\'alerte</string>
     <string name="manage_alert">Je gère l\'alerte</string>
     <string name="go_to_alert_page">Page alerte</string>
     <string name="mapbox_access_token">pk.eyJ1Ijoid3JvbmdqdWljZSIsImEiOiJja2xiajk3aHYwZm41MnBzNHpsbWZkZDNlIn0.ehH9r8d1OoVfwB5je_pnGA</string>
@@ -31,4 +32,5 @@
     <string name="someone">personne</string>
     <string name="statement_status">En cours de traitement</string>
     <string name="back_to_map">Retour à la carte</string>
+    <string name="treated_by">"Traité par"</string>
 </resources>

@@ -54,6 +54,7 @@ public class AlertActivity extends Activity implements SurfaceHolder.Callback {
     private Button treat_alert;
     private SurfaceView surfaceView;
     AuthenticationService auth = AuthenticationService.getInstance();
+
     //============================================================================================
     // iBeacon variables
     //============================================================================================
@@ -240,5 +241,11 @@ public class AlertActivity extends Activity implements SurfaceHolder.Callback {
     protected void onPause() {
         super.onPause();
         mCamera.release();
+    }
+
+    public void statementHistory(View view) {
+        Intent intent = new Intent(this, StatementsListActivity.class);
+        intent.putExtra("statementId", statement.getId());
+        startActivity(intent);
     }
 }
