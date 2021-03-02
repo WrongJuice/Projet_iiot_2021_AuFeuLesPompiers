@@ -1,32 +1,50 @@
 package com.example.aufeulespompiers.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.aufeulespompiers.R;
+import com.example.aufeulespompiers.Services.AuthenticationService;
 import com.example.aufeulespompiers.Services.FirestoreService;
 import com.example.aufeulespompiers.interfaces.OnAlertByIdReceivedListener;
 import com.example.aufeulespompiers.model.Statement;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
-public class AlertActivity extends AppCompatActivity {
+public class AlertActivity extends Activity implements SurfaceHolder.Callback {
 
     private static final String TAG = "AlertActivity";
+    private static final int PHOTO_RESULT = 123456;
     private FirestoreService firestoreService;
     private Statement statement;
+    private Camera mCamera = null;
 
+    private TextView statement_status;
     private TextView sensor_title;
     private TextView statement_hour;
     private TextView temperature;
@@ -34,6 +52,8 @@ public class AlertActivity extends AppCompatActivity {
     private TextView longitude_example;
     private TextView someone;
     private Button treat_alert;
+    private SurfaceView surfaceView;
+    AuthenticationService auth = AuthenticationService.getInstance();
     //============================================================================================
     // iBeacon variables
     //============================================================================================
@@ -48,6 +68,7 @@ public class AlertActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert);
 
+        statement_status = findViewById(R.id.statement_status);
         sensor_title = findViewById(R.id.sensor_title);
         statement_hour = findViewById(R.id.statement_hour);
         temperature = findViewById(R.id.temperature);
@@ -55,13 +76,22 @@ public class AlertActivity extends AppCompatActivity {
         longitude_example = findViewById(R.id.longitude_example);
         someone = findViewById(R.id.someone);
         treat_alert = findViewById(R.id.treat_alert);
+        surfaceView = findViewById(R.id.surfaceView3);
+
+        statement = new Statement();
+
         //============================================================================================
         // iBeacon Init
         //============================================================================================
         btManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = btManager.getAdapter();
-
         scanHandler.post(scanRunnable);
+
+        SurfaceHolder holder = surfaceView.getHolder();
+        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        // On déclare que la classe actuelle gérera les callbacks
+        holder.addCallback(this);
 
         firestoreService = new FirestoreService();
         Intent intent = getIntent();
@@ -69,6 +99,12 @@ public class AlertActivity extends AppCompatActivity {
         firestoreService.getAlertById(id, new OnAlertByIdReceivedListener() {
             @Override
             public void onAlertByIdListReceived(Statement result) {
+                statement = result;
+                if (statement.getResolve()){
+                    statement_status.setBackgroundColor(Color.GREEN);
+                    statement_status.setText("Alerte traité");
+                    treat_alert.setVisibility(View.GONE);
+                }
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 sensor_title.setText(result.getBeacon());
                 statement_hour.setText(formatter.format(result.getDate().toDate()));
@@ -76,11 +112,19 @@ public class AlertActivity extends AppCompatActivity {
                 latitude_example.setText(String.valueOf(result.getPosition().getLatitude()));
                 longitude_example.setText(String.valueOf(result.getPosition().getLongitude()));
                 someone.setText(String.valueOf(result.getAssignedTo()));
+
             }
         });
-
+        treat_alert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resolveAlert();
+            }
+        });
     }
-
+    //============================================================================================
+    // Start beacon discovery
+    //============================================================================================
     private Runnable scanRunnable = new Runnable() {
         @Override
         public void run() {
@@ -129,10 +173,11 @@ public class AlertActivity extends AppCompatActivity {
 
                 // ne prend que les beacons à proximité direct du device
                 Log.d(TAG, "onLeScan: "+ rssi);
-                if (rssi >= -40){
+                Log.d(TAG, "onLeScan: " + statement.getAssignedTo());
+                if (rssi >= -40 && auth.getCurrentUser() == statement.getAssignedTo()){
                     treat_alert.setEnabled(true);
+                    treat_alert.setBackgroundColor(Color.GREEN);
                 }
-
             }
         }
     };
@@ -147,8 +192,53 @@ public class AlertActivity extends AppCompatActivity {
         }
         return new String(hexChars);
     }
+    //============================================================================================
+    // Stop beacon discovery
+    //============================================================================================
+
+    public void resolveAlert() {
+        statement.setResolve(true);
+        firestoreService.modifyStatmentResolve(statement);
+        statement_status.setBackgroundColor(Color.GREEN);
+        statement_status.setText("Alerte traité");
+        treat_alert.setVisibility(View.GONE);
+    }
 
     public void backToMap(View view) {
         onBackPressed();
+    }
+
+    @Override
+    public void surfaceCreated(@NonNull SurfaceHolder holder) {
+        try {
+            mCamera.setPreviewDisplay(holder);
+            mCamera.setDisplayOrientation(90);
+            mCamera.startPreview();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+        mCamera.stopPreview();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mCamera = Camera.open();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mCamera.release();
     }
 }

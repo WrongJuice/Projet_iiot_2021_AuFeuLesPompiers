@@ -22,13 +22,14 @@
         android:id="@+id/control_button_bar">
 
         <Button
+            android:id="@+id/take_alert"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            style="?android:attr/buttonBarButtonStyle"
-            android:text="@string/take_alert"
-            android:id="@+id/take_alert"/>
+            android:enabled="false"
+            android:text="@string/take_alert" />
 
         <Button
             android:layout_width="wrap_content"
