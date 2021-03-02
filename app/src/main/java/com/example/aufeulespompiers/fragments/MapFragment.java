@@ -62,6 +62,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private MapboxMap mapboxMap;
     private Button alertPage;
+    AuthenticationService auth = AuthenticationService.getInstance();
+
 
     View view;
 
@@ -88,7 +90,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         alertPage = view.findViewById(R.id.take_alert);
 
 
-        alertPage.setEnabled(true/*Replace by isAuth condition*/);
+        alertPage.setEnabled(false);
 
 
         return view;
@@ -115,12 +117,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
 
         FirestoreService firestoreService = new FirestoreService();
-        firestoreService.getStatements(result -> {
+        /*firestoreService.getStatements(result -> {
             for(Statement tempStatement : result){
                 tempStatement.setResolve(false);
                 firestoreService.modifyStatmentResolve(tempStatement);
             }
-        });
+        });*/
 
         AuthenticationService auth = AuthenticationService.getInstance();
 
@@ -141,7 +143,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             for (Statement statement : result) {
                 String snippet = "Heure : " + simpleDateFormat.format(statement.getDate().toDate())
-                        + "\nTempérature : " + statement.getTemp() + "°C\nStatus : " + "Non attribué";
+                        + "\nTempérature : " + statement.getTemp() + "°C\n";
+                if(statement.getAssignedTo() == 0){
+                    snippet = snippet + "Status : " + "Non attribué";
+                } else {
+                    snippet = snippet + "Status : " + statement.getAssignedTo();
+                }
                 mapboxMap.addMarker(new MarkerOptions()
                         .position(new LatLng(statement.getPosition().getLatitude(),
                                 statement.getPosition().getLongitude()))
@@ -167,7 +174,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             alertPage.setText("Je prends en charge l'alerte");
                             Statement finalStatement = anotherStatement;
                             alertPage.setOnClickListener(view1 -> {
-                                finalStatement.setAssignedTo(auth.getCurrentUser()); // need reload
+                                finalStatement.setAssignedTo(auth.getCurrentUser());// need reload
+                                firestoreService.modifyStatmentAssignedTo(finalStatement);
                                 String btnMessage = "Gérer l'alerte";
                                 alertPage.setText(btnMessage);
                                 marker.setIcon(iconInProgress);
@@ -189,7 +197,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             });
                         } else {
                             alertPage.setEnabled(auth.getCurrentUser() != 0);
-                            String btnMessage = "Assigné à "+ auth.getCurrentUser();
+                            String btnMessage = "Pris en charge";
                             alertPage.setText(btnMessage);
                             Statement finalStatement2 = anotherStatement;
                             alertPage.setOnClickListener(view1 -> {

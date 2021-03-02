@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.aufeulespompiers.R;
+import com.example.aufeulespompiers.Services.AuthenticationService;
 import com.example.aufeulespompiers.Services.DataManager;
 import com.example.aufeulespompiers.Services.FirestoreService;
 import com.example.aufeulespompiers.adapters.AlertAdapter;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
     private PermissionsManager permissionsManager;
     private MapFragment mapFragment;
+    AuthenticationService auth = AuthenticationService.getInstance();
 
     //============================================================================================
     // Variable NFC
@@ -106,10 +108,10 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
     public void ident (long number) {
         Log.d(TAG, "number: "+number);
-        if(userCertified.contains(""+number)){
+        if(auth.getUserAutrorized().contains(number)){
             username.setText("user N°" + number);
+            auth.setCurrentUser(number);
         } else {
-
             Toast toast = Toast.makeText(this, "Connection refusée", Toast.LENGTH_LONG);
             toast.show();
         }
@@ -127,12 +129,15 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     @Override
     protected void onResume() {
         super.onResume();
+        adapter.enableForegroundDispatch(this, pendingIntent, filters, techs);
         mapFragment.getMapView().onResume();
+        reloadMap();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        adapter.disableForegroundDispatch(this);
         mapFragment.getMapView().onPause();
     }
 
@@ -167,5 +172,14 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    public void reloadMap(){
+        FragmentTransaction ft = getSupportFragmentManager()
+                .beginTransaction();
+        mapFragment = new MapFragment();
+        ft.replace(R.id.map_container, mapFragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.commit();
     }
 }

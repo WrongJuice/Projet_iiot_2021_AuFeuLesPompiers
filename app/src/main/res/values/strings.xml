@@ -12,8 +12,8 @@
     <string name="random_hot_temp">43.5°C</string>
     <string name="distance">distance</string>
     <string name="no_statement">Aucun relevé</string>
-    <string name="alert_traited">Alerte traitée</string>
-    <string name="take_alert">Je prends en charge l\'alerte</string>
+    <string name="alert_traited">Traiter l\'alerte</string>
+    <string name="take_alert">Sélectionner une alerte</string>
     <string name="manage_alert">Je gère l\'alerte</string>
     <string name="go_to_alert_page">Page alerte</string>
     <string name="mapbox_access_token">pk.eyJ1Ijoid3JvbmdqdWljZSIsImEiOiJja2xiajk3aHYwZm41MnBzNHpsbWZkZDNlIn0.ehH9r8d1OoVfwB5je_pnGA</string>
