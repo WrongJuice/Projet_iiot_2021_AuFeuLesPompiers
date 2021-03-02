@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+// Singleton class to be able to use the same variable in all the application
 public class AuthenticationService {
 
     long currentUser;
@@ -32,6 +33,7 @@ public class AuthenticationService {
         this.currentUser = currentUser;
     }
 
+    // Long and not long for use .contains method for check the authorized user
     public ArrayList<Long> getUserAutrorized() {
         return userAutrorized;
     }
